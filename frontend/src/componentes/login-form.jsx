@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Box, TextField, Button, Typography, Paper, InputAdornment, IconButton, Avatar, Container, Alert } from '@mui/material'
 import { Visibility, VisibilityOff, Coffee, Lock, Person } from '@mui/icons-material'
+import q_powered from '../media/Q_powered.png'
 import '../styles/login-form.css'
 
 export function LoginForm({ onLogin }) {
@@ -15,7 +16,7 @@ export function LoginForm({ onLogin }) {
     setError('')
     setLoading(true)
     try {
-      const res = await fetch('http://172.16.65.217:3001/api/usuario/auth/admin', {
+      const res = await fetch('http://localhost:3001/api/usuario/auth/admin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ correo: email, contrasenia: password })
@@ -34,7 +35,7 @@ export function LoginForm({ onLogin }) {
       // Si el backend devuelve un token lo guardamos
       const token = data.token || data.accessToken || data.access_token || null
       if (token) {
-        try { localStorage.setItem('authToken', token) } catch (_) {}
+        try { localStorage.setItem('authToken', token) } catch (_) { }
       }
 
       if (onLogin) onLogin()
@@ -80,7 +81,7 @@ export function LoginForm({ onLogin }) {
             <Typography
               variant="body1"
               sx={{
-                color: 'var(--muted)',
+                color: 'var(--primary)',
                 fontWeight: 500,
               }}
             >
@@ -107,6 +108,7 @@ export function LoginForm({ onLogin }) {
             <TextField
               fullWidth
               label="Correo electrónico"
+              placeholder="email@email.com"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -130,6 +132,7 @@ export function LoginForm({ onLogin }) {
             <TextField
               fullWidth
               label="Contraseña"
+              placeholder="Contraseña"
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -147,7 +150,7 @@ export function LoginForm({ onLogin }) {
                       aria-label="toggle password visibility"
                       onClick={handleClickShowPassword}
                       edge="end"
-                      sx={{ color: 'var(--muted)' }}
+                      sx={{ color: 'var(--primary)' }}
                     >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
@@ -176,7 +179,7 @@ export function LoginForm({ onLogin }) {
                 borderRadius: 2,
                 textTransform: 'none',
                 backgroundColor: 'var(--primary)',
-                color: 'var(--card-foreground)',
+                color: 'var(--background)',
               }}
             >
               {loading ? 'Iniciando...' : 'Iniciar Sesión'}
@@ -186,7 +189,7 @@ export function LoginForm({ onLogin }) {
               <Typography
                 variant="body2"
                 sx={{
-                  color: 'var(--muted)',
+                  color: 'var(--foreground)',
                   cursor: 'pointer',
                 }}
               >
@@ -199,16 +202,36 @@ export function LoginForm({ onLogin }) {
             <Typography
               variant="caption"
               sx={{
-                color: 'var(--muted)',
+                color: 'var(--foreground)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 0.5,
+                gap: 1,
                 justifyContent: 'center',
               }}
             >
               Powered by
-              <Coffee sx={{ fontSize: 14 }} />
-              Cafetería Admin
+              <Box
+                component="span"
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 0.2,
+                }}
+              >
+                <Box
+                  component="img"
+                  src={q_powered}
+                  alt="YaQbit"
+                  sx={{
+                    height: 22,
+                    transition: 'transform 0.2s',
+                    '&:hover': {
+                      transform: 'scale(1.1)',
+                    },
+                  }}
+                />
+                <Box component="span" sx={{ fontWeight: 'bold' }}>YaQbit</Box>
+              </Box>
             </Typography>
           </Box>
         </Box>
