@@ -21,7 +21,6 @@ export default function ScanConfirmPage() {
       setLoading(false);
       return;
     }
-
     buscarEstudiante(token);
   }, [token]);
 
@@ -73,71 +72,104 @@ export default function ScanConfirmPage() {
     }
   };
 
-  if (loading) return <div className="flex justify-center items-center h-screen"><Loader2 className="animate-spin" size={60} /></div>;
+  if (loading) return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
+      <Loader2 className="animate-spin text-white" size={80} />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center p-6">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-10 text-center">
-        {error ? (
-          <>
-            <X className="w-24 h-24 text-red-500 mx-auto mb-6" />
-            <h1 className="text-3xl font-bold text-red-600 mb-4">Error</h1>
-            <p className="text-xl text-gray-700">{error}</p>
-            <button onClick={() => navigate('/cafeteria')} className="mt-8 bg-gray-600 text-white px-8 py-4 rounded-full text-xl font-bold">
-              Volver
-            </button>
-          </>
-        ) : !resultado ? (
-          <>
-            <User className="w-32 h-32 text-orange-600 mx-auto mb-6" />
-            <h1 className="text-4xl font-bold mb-4">¿Registrar almuerzo?</h1>
-            <h2 className="text-3xl font-bold text-orange-600 mb-2">{estudiante?.nombre}</h2>
-            <p className="text-2xl text-gray-600 mb-10">#{estudiante?.codigoUnico || 'Sin código'}</p>
+      <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden">
+        {/* Header decorativo opcional */}
+        <div className="h-2 bg-gradient-to-r from-orange-500 to-red-600"></div>
 
-            <div className="flex gap-4">
+        <div className="p-10 pb-12 text-center">
+
+          {error ? (
+            <>
+              <div className="mx-auto w-32 h-32 bg-red-100 rounded-full flex items-center justify-center mb-8">
+                <X className="w-20 h-20 text-red-600" />
+              </div>
+              <h1 className="text-4xl font-bold text-red-600 mb-4">Error</h1>
+              <p className="text-xl text-gray-700 mb-10">{error}</p>
               <button
                 onClick={() => navigate('/cafeteria')}
-                className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-5 rounded-2xl text-xl font-bold"
+                className="bg-gray-600 hover:bg-gray-700 text-white px-10 py-5 rounded-full text-xl font-semibold transition"
               >
-                Cancelar
+                Volver al panel
               </button>
-              <button
-                onClick={registrarAlmuerzo}
-                disabled={registrando}
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white py-5 rounded-2xl text-xl font-bold flex items-center justify-center gap-3"
-              >
-                {registrando ? "Registrando..." : <><Check size={32} /> Confirmar</>}
-              </button>
-            </div>
-          </>
-        ) : (
-          <>
-            {resultado.success ? (
-              <>
-                <Check className="w-32 h-32 text-green-500 mx-auto mb-6" />
-                <h1 className="text-5xl font-bold text-green-600 mb-6">¡REGISTRADO!</h1>
-                {resultado.esGratis && (
-                  <div className="bg-green-100 text-green-800 px-8 py-4 rounded-full text-3xl font-bold mb-6 inline-block">
-                    ALMUERZO GRATIS
+            </>
+          ) : !resultado ? (
+            <>
+              {/* Avatar del estudiante */}
+              <div className="mx-auto w-40 h-40 bg-orange-100 rounded-full flex items-center justify-center mb-8 shadow-lg">
+                <User className="w-24 h-24 text-orange-600" />
+              </div>
+
+              <h1 className="text-4xl font-bold text-gray-800 mb-6">¿Registrar almuerzo?</h1>
+              <h2 className="text-3xl font-bold text-orange-600 mb-3">{estudiante?.nombre}</h2>
+              <p className="text-2xl text-gray-600 mb-12">#{estudiante?.codigoUnico || 'Sin código'}</p>
+
+              <div className="flex gap-6">
+                <button
+                  onClick={() => navigate('/cafeteria')}
+                  className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-5 rounded-2xl text-xl font-bold transition shadow-md"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={registrarAlmuerzo}
+                  disabled={registrando}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-5 rounded-2xl text-xl font-bold transition shadow-md flex items-center justify-center gap-3"
+                >
+                  {registrando ? (
+                    "Registrando..."
+                  ) : (
+                    <>
+                      <Check size={36} />
+                      Confirmar
+                    </>
+                  )}
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              {resultado.success ? (
+                <>
+                  <div className="mx-auto w-40 h-40 bg-green-100 rounded-full flex items-center justify-center mb-8 shadow-lg animate-pulse">
+                    <Check className="w-24 h-24 text-green-600" />
                   </div>
-                )}
-                <p className="text-2xl text-gray-700">{resultado.mensaje}</p>
-              </>
-            ) : (
-              <>
-                <X className="w-32 h-32 text-red-500 mx-auto mb-6" />
-                <h1 className="text-5xl font-bold text-red-600 mb-6">ERROR</h1>
-                <p className="text-2xl text-gray-700">{resultado.mensaje}</p>
-              </>
-            )}
-            <button
-              onClick={() => navigate('/scan-qr')}
-              className="mt-10 bg-orange-600 hover:bg-orange-700 text-white px-12 py-5 rounded-full text-2xl font-bold"
-            >
-              Escanear otro
-            </button>
-          </>
-        )}
+                  <h1 className="text-5xl font-bold text-green-600 mb-8">¡REGISTRADO!</h1>
+
+                  {resultado.esGratis && (
+                    <div className="inline-block bg-gradient-to-r from-green-500 to-emerald-600 text-white px-10 py-5 rounded-full text-3xl font-bold shadow-lg mb-8">
+                      ALMUERZO GRATIS 🎉
+                    </div>
+                  )}
+
+                  <p className="text-2xl text-gray-700 mb-12">{resultado.mensaje}</p>
+                </>
+              ) : (
+                <>
+                  <div className="mx-auto w-40 h-40 bg-red-100 rounded-full flex items-center justify-center mb-8">
+                    <X className="w-24 h-24 text-red-600" />
+                  </div>
+                  <h1 className="text-5xl font-bold text-red-600 mb-8">ERROR</h1>
+                  <p className="text-2xl text-gray-700 mb-12">{resultado.mensaje}</p>
+                </>
+              )}
+
+              <button
+                onClick={() => navigate('/scan-qr')}
+                className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-12 py-6 rounded-full text-2xl font-bold transition shadow-lg"
+              >
+                Escanear otro QR
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
